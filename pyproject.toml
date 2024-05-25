@@ -5,6 +5,9 @@ description = ""
 authors = ["Shion Noguchi <shion24stat@gmail.com>"]
 readme = "README.md"
 
+[tool.poetry.scripts]
+morphy = "morphy.main:app"
+
 [tool.poetry.dependencies]
 python = "^3.10"
 typer = "^0.12.3"
