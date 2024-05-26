@@ -1,6 +1,6 @@
 import typer
 
-from .cmd import make, update, show
+from .cmd import make, show, update
 
 app = typer.Typer()
 app.add_typer(update.app, name="update")
