@@ -36,11 +36,16 @@ def make_1s_candle(df: pd.DataFrame) -> pd.DataFrame:
     convert trading data to ohlcv data.
     required columns of df: ['datetime', 'side', 'size', 'price']
 
-    df:
-    - datetime(pd.datetime64[ns]): timestamp of the trade
-    - side(str): 'Buy' or 'Sell'
-    - size(float): size of the trade
-    - price(float): price of the trade
+    Args:
+    - df(pd.DataFrame): trading data
+        df:
+        - datetime(pd.datetime64[ns]): timestamp of the trade
+        - side(str): 'Buy' or 'Sell'
+        - size(float): size of the trade
+        - price(float): price of the trade
+
+    Returns:
+    - df(pd.DataFrame): ohlcv data
 
     """
 
@@ -76,13 +81,36 @@ def make_1s_candle(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 def make_savepath(exchange: str, symbol: str, date: datetime.datetime) -> str:
+    """
+    Make savepath for each ohlcv data.
+    This function defines how savepath is calculated.
+
+    Args:
+    - exchange(str): exchange name
+    - symbol(str): symbol
+    - date(datetime.datetime): date
+
+    Returns:
+    - str: savepath
+    
+    """
     return os.path.join(
         config.STORAGE_DIR, exchange, symbol, f"{date.strftime('%Y%m%d')}.csv.gz"
     )
 
 
-# rename this function to process
 def download_and_save(url: str, exc: Bybit, savepath: str) -> None:
+    """
+    Download data from the url and save it to the savepath.
+    This function is used in ThreadPoolExecutor.
+
+    Args:
+    - url(str): URL to download
+    - exc(Bybit): exchange object
+    - savepath(str): savepath
+    
+    """
+
     if os.path.exists(savepath):
         # skip
         return
@@ -93,7 +121,7 @@ def download_and_save(url: str, exc: Bybit, savepath: str) -> None:
     df.to_csv(savepath, compression="gzip")
 
 
-@app.command("item")
+@app.command("item", help='Update an item in morphy storage.')
 @timer
 def update(
     exchange: Annotated[str, typer.Argument(..., help="Exchange name")],
@@ -102,7 +130,15 @@ def update(
     end: Annotated[str, typer.Argument(..., help="End date(YYYYMMDD)")],
 ) -> None:
     """
-    Update an item in morphy storage.
+    An implementation of the update item command of the Morphy CLI.
+    This function downloads trading data and saves it to the storage directory.
+    Downloading is done in a concurrent process.
+    
+    Args:
+    - exchange(str): exchange name
+    - symbol(str): symbol
+    - begin(str): begin date(YYYYMMDD)
+    - end(str): end date(YYYYMMDD)
 
     """
 
