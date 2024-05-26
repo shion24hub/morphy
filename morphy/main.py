@@ -1,5 +1,5 @@
-from typing import Annotated
 import os
+from typing import Annotated
 
 import typer
 from rich import print
@@ -20,7 +20,7 @@ def callback() -> None:
     Morphy CLI Callback.
     If the project directory ($HOME/.morphy) does not exist, create it including the storage directory.
     Also, create a configuration file (morphy.ini) in the project directory.
-    
+
     """
     if not os.path.exists(config.PROJECT_DIR):
         print("\n[bold green]<-- Morphy CLI Callback -->[/bold green]\n")
@@ -56,7 +56,7 @@ def change_storage_path(
     """
     An implementation of the edit command of the Morphy CLI.
     Change the storage directory path in the configuration file (morphy.ini).
-    
+
     """
 
     y_or_n = typer.prompt(
@@ -65,17 +65,17 @@ def change_storage_path(
     if y_or_n.lower() != "y":
         print("Canceled.")
         return
-    
+
     inifile = os.path.join(config.PROJECT_DIR, "morphy.ini")
     with open(inifile, "r") as f:
         lines = f.readlines()
-    
+
     with open(inifile, "w") as f:
         for line in lines:
             if line.startswith("STORAGE_DIR"):
                 f.write(f"STORAGE_DIR = {to}\n")
             else:
                 f.write(line)
-    
+
     print("The storage directory path has been changed.")
     print("All processes are completed.")
