@@ -1,5 +1,4 @@
 import os
-from pathlib import Path
 
 import typer
 from rich import print
@@ -23,20 +22,18 @@ def callback() -> None:
         print('If not, the directory may have been accidentally deleted. Please check.\n')
 
         print('Create a new project directory at $HOME/.morphy.')
-        prj_dir = Path(config.PROJECT_DIR)
-        os.makedirs(prj_dir, exist_ok=True)
+        os.makedirs(config.PROJECT_DIR, exist_ok=True)
         print('    - Done.')
         
         print('Create a new storage directory at $HOME/.morphy/storage.')
-        strg_dir = Path(config.STORAGE_DIR)
-        os.makedirs(strg_dir, exist_ok=True)
+        os.makedirs(config.DEFAULT_STORAGE_DIR, exist_ok=True)
         print('    - Done.')
 
-        inifile = os.path.join(prj_dir, 'morphy.ini')
+        inifile = os.path.join(config.PROJECT_DIR, 'morphy.ini')
         with open(inifile, 'w') as f:
             f.write(f'[paths]\n')
             f.write(f'project_dir = {config.PROJECT_DIR}\n')
-            f.write(f'storage_dir = {config.STORAGE_DIR}\n')
+            f.write(f'storage_dir = {config.DEFAULT_STORAGE_DIR}\n')
         
         print('\nIf you want to change the storage directory, use `morphy setup`.')
         print("All processes are completed.")
