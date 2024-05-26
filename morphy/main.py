@@ -1,3 +1,4 @@
+from typing import Annotated
 import os
 
 import typer
@@ -43,6 +44,38 @@ def callback() -> None:
             f.write(f"PROJECT_DIR = {config.PROJECT_DIR}\n")
             f.write(f"STORAGE_DIR = {config.DEFAULT_STORAGE_DIR}\n")
 
-        print("\nIf you want to change the storage directory, use `morphy edit`.")
+        print("\nIf you want to change the storage directory, use `morphy cs`.")
         print("All processes are completed.")
         print("\n[bold green]<-- Morphy CLI Callback -->[/bold green]\n")
+
+
+@app.command("cs", help="Change the storage directory path.")
+def change_storage_path(
+    to: Annotated[str, typer.Argument(..., help="New storage directory path")]
+) -> None:
+    """
+    An implementation of the edit command of the Morphy CLI.
+    Change the storage directory path in the configuration file (morphy.ini).
+    
+    """
+
+    y_or_n = typer.prompt(
+        f"Do you really want to change the storage directory path to {to}? (y/n)"
+    )
+    if y_or_n.lower() != "y":
+        print("Canceled.")
+        return
+    
+    inifile = os.path.join(config.PROJECT_DIR, "morphy.ini")
+    with open(inifile, "r") as f:
+        lines = f.readlines()
+    
+    with open(inifile, "w") as f:
+        for line in lines:
+            if line.startswith("STORAGE_DIR"):
+                f.write(f"STORAGE_DIR = {to}\n")
+            else:
+                f.write(line)
+    
+    print("The storage directory path has been changed.")
+    print("All processes are completed.")
