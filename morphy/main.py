@@ -10,4 +10,3 @@ app.add_typer(update.app, name="update")
 @app.command()
 def test():
     print("This is Morphy CLI. Can you hear me?")
-

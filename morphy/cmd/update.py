@@ -1,9 +1,9 @@
 import datetime
 import os
-from concurrent import futures
-from typing import Annotated
-from functools import wraps
 import time
+from concurrent import futures
+from functools import wraps
+from typing import Annotated
 
 import numpy as np
 import pandas as pd
@@ -28,6 +28,7 @@ def timer(func):
         elapsed = time.time() - start
         print(f"Elapsed time: {elapsed:.2f} sec")
         return result
+
     return wrapper
 
 
@@ -35,7 +36,7 @@ def make_1s_candle(df: pd.DataFrame) -> pd.DataFrame:
     """
     convert trading data to ohlcv data.
     required columns of df: ['datetime', 'side', 'size', 'price']
-    df: 
+    df:
     - datetime(pd.datetime64[ns]): timestamp of the trade
     - side(str): 'Buy' or 'Sell'
     - size(float): size of the trade
@@ -80,6 +81,7 @@ def make_1s_candle(df: pd.DataFrame) -> pd.DataFrame:
 
     return df
 
+
 def make_savepath(exchange: str, symbol: str, date: datetime.datetime) -> str:
     """
     Make savepath for each ohlcv data.
@@ -92,7 +94,7 @@ def make_savepath(exchange: str, symbol: str, date: datetime.datetime) -> str:
 
     Returns:
         str: savepath
-    
+
     """
     return os.path.join(
         config.STORAGE_DIR, exchange, symbol, f"{date.strftime('%Y%m%d')}.csv.gz"
@@ -108,7 +110,7 @@ def download_and_save(url: str, exc: Bybit, savepath: str) -> None:
         url(str): URL to download
         exc(Bybit): exchange object
         savepath(str): savepath
-    
+
     """
 
     if os.path.exists(savepath):
@@ -121,7 +123,7 @@ def download_and_save(url: str, exc: Bybit, savepath: str) -> None:
     df.to_csv(savepath, compression="gzip")
 
 
-@app.command("item", help='Update an item in morphy storage.')
+@app.command("item", help="Update an item in morphy storage.")
 @timer
 def update(
     exchange: Annotated[str, typer.Argument(..., help="Exchange name")],
@@ -133,7 +135,7 @@ def update(
     An implementation of the update item command of the Morphy CLI.
     This function downloads trading data and saves it to the storage directory.
     Downloading is done in a concurrent process.
-    
+
     Args:
         exchange(str): exchange name
         symbol(str): symbol
@@ -174,7 +176,6 @@ def update(
                 executor.map(download_and_save, urls, excs, savepaths),
                 total=len(urls),
                 description="Downloading...",
-
             )
         )
 

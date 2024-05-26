@@ -3,19 +3,20 @@ import os
 
 import pandas as pd
 
+
 class Bybit:
     def __init__(self) -> None:
         self.name = "Bybit"
         self.base_url = "https://public.bybit.com/trading/"
 
     def make_url(self, symbol: str, date: datetime.datetime) -> str:
-        """ make_url
+        """make_url
         Args:
             symbol (str): symbol
             date (datetime.datetime): date
         Returns:
             str: URL to download. e.g. https://public.bybit.com/trading/BTCUSDT/BTCUSDT2021-09-01.csv.gz
-        
+
         """
 
         return os.path.join(
@@ -23,11 +24,11 @@ class Bybit:
         )
 
     def download(self, url: str) -> pd.DataFrame | None:
-        """ download
+        """download
         Args:
             url (str): URL to download
         Returns:
-            pd.DataFrame | None: DataFrame if success, None if failed. df.columns = ["timestamp", "datetime", ""] 
+            pd.DataFrame | None: DataFrame if success, None if failed. df.columns = ["timestamp", "datetime", ""]
 
         """
 
