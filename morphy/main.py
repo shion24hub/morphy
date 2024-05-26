@@ -15,6 +15,12 @@ app.add_typer(remove.app, name="remove")
 
 @app.callback()
 def callback() -> None:
+    """
+    Morphy CLI Callback.
+    If the project directory ($HOME/.morphy) does not exist, create it including the storage directory.
+    Also, create a configuration file (morphy.ini) in the project directory.
+    
+    """
     if not os.path.exists(config.PROJECT_DIR):
         print("\n[bold green]<-- Morphy CLI Callback -->[/bold green]\n")
         print("The Morphy's project directory does NOT seem to exist.")
@@ -37,6 +43,6 @@ def callback() -> None:
             f.write(f"PROJECT_DIR = {config.PROJECT_DIR}\n")
             f.write(f"STORAGE_DIR = {config.DEFAULT_STORAGE_DIR}\n")
 
-        print("\nIf you want to change the storage directory, use `morphy setup`.")
+        print("\nIf you want to change the storage directory, use `morphy edit`.")
         print("All processes are completed.")
         print("\n[bold green]<-- Morphy CLI Callback -->[/bold green]\n")
