@@ -1,7 +1,7 @@
+import configparser
 import os
 import time
 from functools import wraps
-import configparser
 from pathlib import Path
 
 from .. import config
@@ -28,5 +28,5 @@ def find_storage_path() -> Path:
     except KeyError:
         err = "Storage directory not found in `morphy.ini`."
         raise ValueError(err)
-    
+
     return Path(storage_dir)

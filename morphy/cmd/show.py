@@ -17,7 +17,7 @@ def show() -> None:
     and the date range of the data.
 
     """
-    
+
     global storage_dir_path
     storage_dir_path = util.find_storage_path()
 
