@@ -9,7 +9,6 @@ import typer
 from rich import print
 from rich.progress import track
 
-from .. import config
 from . import util
 from .model.bybit import Bybit
 
@@ -84,7 +83,7 @@ def make_savepath(exchange: str, symbol: str, date: datetime.datetime) -> str:
 
     """
     return os.path.join(
-        config.STORAGE_DIR, exchange, symbol, f"{date.strftime('%Y%m%d')}.csv.gz"
+        storage_dir_path, exchange, symbol, f"{date.strftime('%Y%m%d')}.csv.gz"
     )
 
 
@@ -130,6 +129,9 @@ def update(
         end(str): end date(YYYYMMDD)
 
     """
+
+    global storage_dir_path
+    storage_dir_path = util.find_storage_path()
 
     # <-- Input Validation -->
     if exchange.lower() == "bybit":

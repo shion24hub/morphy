@@ -31,9 +31,9 @@ def callback() -> None:
 
         inifile = os.path.join(config.PROJECT_DIR, 'morphy.ini')
         with open(inifile, 'w') as f:
-            f.write(f'[paths]\n')
-            f.write(f'project_dir = {config.PROJECT_DIR}\n')
-            f.write(f'storage_dir = {config.DEFAULT_STORAGE_DIR}\n')
+            f.write(f'[PATHS]\n')
+            f.write(f'PROJECT_DIR = {config.PROJECT_DIR}\n')
+            f.write(f'STORAGE_DIR = {config.DEFAULT_STORAGE_DIR}\n')
         
         print('\nIf you want to change the storage directory, use `morphy setup`.')
         print("All processes are completed.")

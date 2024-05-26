@@ -8,7 +8,6 @@ import typer
 from rich import print
 from rich.progress import track
 
-from .. import config
 from . import util
 
 app = typer.Typer()
@@ -71,6 +70,9 @@ def make(
 
     """
 
+    global storage_dir_path
+    storage_dir_path = util.find_storage_path()
+
     # <-- Input Validation -->
     try:
         fbegin = datetime.datetime.strptime(begin, "%Y%m%d")
@@ -96,7 +98,7 @@ def make(
 
     for date in track(date_range, description="Making..."):
         target = os.path.join(
-            config.STORAGE_DIR, exchange, symbol, f"{date.strftime('%Y%m%d')}.csv.gz"
+            storage_dir_path, exchange, symbol, f"{date.strftime('%Y%m%d')}.csv.gz"
         )
         if not os.path.exists(target):
             # skip

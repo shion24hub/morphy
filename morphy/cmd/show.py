@@ -3,7 +3,7 @@ import os
 import typer
 from rich import print
 
-from .. import config
+from . import util
 
 app = typer.Typer()
 
@@ -17,25 +17,28 @@ def show() -> None:
     and the date range of the data.
 
     """
+    
+    global storage_dir_path
+    storage_dir_path = util.find_storage_path()
 
     # <-- Main Logic -->
     # get the size of the storage directory
     total_size = 0
-    for root, _, files in os.walk(config.STORAGE_DIR):
+    for root, _, files in os.walk(storage_dir_path):
         for file in files:
             total_size += os.path.getsize(os.path.join(root, file))
 
     # get the list of items
     items = []
-    for exchange in os.listdir(config.STORAGE_DIR):
+    for exchange in os.listdir(storage_dir_path):
         if exchange.startswith("."):
             continue
 
-        for symbol in os.listdir(os.path.join(config.STORAGE_DIR, exchange)):
+        for symbol in os.listdir(os.path.join(storage_dir_path, exchange)):
             if symbol.startswith("."):
                 continue
 
-            dates = os.listdir(os.path.join(config.STORAGE_DIR, exchange, symbol))
+            dates = os.listdir(os.path.join(storage_dir_path, exchange, symbol))
             dates = [date.split(".")[0] for date in dates]
             if len(dates) == 0:
                 continue

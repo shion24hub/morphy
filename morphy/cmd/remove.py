@@ -7,6 +7,7 @@ import typer
 from rich import print
 
 from .. import config
+from . import util
 
 app = typer.Typer()
 
@@ -29,6 +30,9 @@ def remove(
         end(str): End date(YYYYMMDD)
     
     """
+
+    global storage_dir_path
+    storage_dir_path = util.find_storage_path()
 
     # <-- Input Validation -->
     try:
@@ -55,7 +59,7 @@ def remove(
     date_range = pd.date_range(fbegin, fend, freq="D")
     for date in date_range:
         target = os.path.join(
-            config.STORAGE_DIR, exchange, symbol, f"{date.strftime('%Y%m%d')}.csv.gz"
+            storage_dir_path, exchange, symbol, f"{date.strftime('%Y%m%d')}.csv.gz"
         )
 
         if not os.path.exists(target):

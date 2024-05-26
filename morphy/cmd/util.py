@@ -1,5 +1,10 @@
+import os
 import time
 from functools import wraps
+import configparser
+from pathlib import Path
+
+from .. import config
 
 
 def timer(func):
@@ -12,3 +17,16 @@ def timer(func):
         return result
 
     return wrapper
+
+
+def find_storage_path() -> Path:
+    parser = configparser.ConfigParser()
+    parser.read(os.path.join(config.PROJECT_DIR, "morphy.ini"))
+
+    try:
+        storage_dir = parser["PATHS"]["STORAGE_DIR"]
+    except KeyError:
+        err = "Storage directory not found in `morphy.ini`."
+        raise ValueError(err)
+    
+    return Path(storage_dir)
