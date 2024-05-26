@@ -113,15 +113,18 @@ def update(
     date_range = pd.date_range(fbegin, fend, freq="D")
 
     urls = [exc.make_url(symbol, date) for date in date_range]
+    excs = [exc] * len(urls)
     savepaths = [make_savepath(exchange, symbol, date) for date in date_range]
+
     workers = min(MAX_WORKERS, len(urls))
 
     with futures.ThreadPoolExecutor(workers) as executor:
         list(
             track(
-                executor.map(download_and_save, urls, [exc] * len(urls), savepaths),
-                total=len(urls),
+                executor.map(download_and_save, urls, excs, savepaths),
+                totalw=len(urls),
                 description="Downloading...",
+
             )
         )
 
