@@ -2,6 +2,8 @@ import datetime
 import os
 from concurrent import futures
 from typing import Annotated
+from functools import wraps
+import time
 
 import numpy as np
 import pandas as pd
@@ -16,6 +18,17 @@ app = typer.Typer()
 
 # constants
 MAX_WORKERS = 20
+
+
+def timer(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        elapsed = time.time() - start
+        print(f"Elapsed time: {elapsed:.2f} sec")
+        return result
+    return wrapper
 
 
 def make_1s_candle(df: pd.DataFrame) -> pd.DataFrame:
@@ -81,6 +94,7 @@ def download_and_save(url: str, exc: Bybit, savepath: str) -> None:
 
 
 @app.command("item")
+@timer
 def update(
     exchange: Annotated[str, typer.Argument(..., help="Exchange name")],
     symbol: Annotated[str, typer.Argument(..., help="Symbol")],
@@ -122,7 +136,7 @@ def update(
         list(
             track(
                 executor.map(download_and_save, urls, excs, savepaths),
-                totalw=len(urls),
+                total=len(urls),
                 description="Downloading...",
 
             )
