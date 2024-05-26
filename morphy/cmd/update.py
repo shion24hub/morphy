@@ -35,17 +35,17 @@ def make_1s_candle(df: pd.DataFrame) -> pd.DataFrame:
     """
     convert trading data to ohlcv data.
     required columns of df: ['datetime', 'side', 'size', 'price']
+    df: 
+    - datetime(pd.datetime64[ns]): timestamp of the trade
+    - side(str): 'Buy' or 'Sell'
+    - size(float): size of the trade
+    - price(float): price of the trade
 
     Args:
-    - df(pd.DataFrame): trading data
-        df:
-        - datetime(pd.datetime64[ns]): timestamp of the trade
-        - side(str): 'Buy' or 'Sell'
-        - size(float): size of the trade
-        - price(float): price of the trade
+        df(pd.DataFrame): trading data
 
     Returns:
-    - df(pd.DataFrame): ohlcv data
+        df(pd.DataFrame): ohlcv data
 
     """
 
@@ -86,12 +86,12 @@ def make_savepath(exchange: str, symbol: str, date: datetime.datetime) -> str:
     This function defines how savepath is calculated.
 
     Args:
-    - exchange(str): exchange name
-    - symbol(str): symbol
-    - date(datetime.datetime): date
+        exchange(str): exchange name
+        symbol(str): symbol
+        date(datetime.datetime): date
 
     Returns:
-    - str: savepath
+        str: savepath
     
     """
     return os.path.join(
@@ -105,9 +105,9 @@ def download_and_save(url: str, exc: Bybit, savepath: str) -> None:
     This function is used in ThreadPoolExecutor.
 
     Args:
-    - url(str): URL to download
-    - exc(Bybit): exchange object
-    - savepath(str): savepath
+        url(str): URL to download
+        exc(Bybit): exchange object
+        savepath(str): savepath
     
     """
 
@@ -135,10 +135,10 @@ def update(
     Downloading is done in a concurrent process.
     
     Args:
-    - exchange(str): exchange name
-    - symbol(str): symbol
-    - begin(str): begin date(YYYYMMDD)
-    - end(str): end date(YYYYMMDD)
+        exchange(str): exchange name
+        symbol(str): symbol
+        begin(str): begin date(YYYYMMDD)
+        end(str): end date(YYYYMMDD)
 
     """
 
