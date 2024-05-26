@@ -10,8 +10,8 @@ from rich import print
 from rich.progress import track
 
 from .. import config
-from .model.bybit import Bybit
 from . import util
+from .model.bybit import Bybit
 
 app = typer.Typer()
 

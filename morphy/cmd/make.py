@@ -1,15 +1,15 @@
-from typing import Annotated
-import os
 import datetime
+import os
 from pathlib import Path
+from typing import Annotated
 
+import pandas as pd
 import typer
 from rich import print
 from rich.progress import track
-import pandas as pd
 
-from . import util
 from .. import config
+from . import util
 
 app = typer.Typer()
 
@@ -21,10 +21,10 @@ def resample_to_Nsec(df: pd.DataFrame, interval: int) -> pd.DataFrame:
     Args:
         df(pd.DataFrame): DataFrame
         interval(int): Interval in seconds
-    
+
     Returns:
         pd.DataFrame: Resampled DataFrame
-    
+
     """
 
     df["datetime"] = pd.to_datetime(df["datetime"])
@@ -54,7 +54,9 @@ def resample_to_Nsec(df: pd.DataFrame, interval: int) -> pd.DataFrame:
     return df
 
 
-@app.command('item', help='Make N-second ohlcv data from original data in morphy storage.')
+@app.command(
+    "item", help="Make N-second ohlcv data from original data in morphy storage."
+)
 @util.timer
 def make(
     exchange: Annotated[str, typer.Argument(..., help="Exchange name")],
@@ -62,13 +64,13 @@ def make(
     begin: Annotated[str, typer.Argument(..., help="Begin date(YYYYMMDD)")],
     end: Annotated[str, typer.Argument(..., help="End date(YYYYMMDD)")],
     interval: Annotated[str, typer.Argument(..., help="Interval(sec)")],
-    to: Annotated[str, typer.Option(..., help="Savepath")] = '.',
+    to: Annotated[str, typer.Option(..., help="Savepath")] = ".",
 ) -> None:
     """
     An implementation of the make item command of the Morphy CLI.
-    
+
     """
-    
+
     # <-- Input Validation -->
     try:
         fbegin = datetime.datetime.strptime(begin, "%Y%m%d")
@@ -80,20 +82,19 @@ def make(
     if fbegin > fend:
         err = "Begin date should be earlier than end date."
         raise ValueError(err)
-    
+
     # posix path
     to = Path(to)
     if not to.exists():
         raise ValueError(f"Path {to} does not exist.")
-    
-    file_name = f"{exchange}_{symbol}_{fbegin.strftime('%Y%m%d')}_{fend.strftime('%Y%m%d')}_{interval}s.csv.gz"
-    
-    # <-- Main Logic -->
-    date_range = pd.date_range(fbegin, fend, freq='D')
-    dfs = []
-    
-    for date in track(date_range, description='Making...'):
 
+    file_name = f"{exchange}_{symbol}_{fbegin.strftime('%Y%m%d')}_{fend.strftime('%Y%m%d')}_{interval}s.csv.gz"
+
+    # <-- Main Logic -->
+    date_range = pd.date_range(fbegin, fend, freq="D")
+    dfs = []
+
+    for date in track(date_range, description="Making..."):
         target = os.path.join(
             config.STORAGE_DIR, exchange, symbol, f"{date.strftime('%Y%m%d')}.csv.gz"
         )
@@ -101,16 +102,16 @@ def make(
             # skip
             continue
 
-        df = pd.read_csv(target, compression='gzip')
+        df = pd.read_csv(target, compression="gzip")
         df = resample_to_Nsec(df, int(interval))
         dfs.append(df)
 
     if len(dfs) == 0:
-        print('No data to make. Use `morphy update` to download data.')
+        print("No data to make. Use `morphy update` to download data.")
         return
-    
+
     final_df = pd.concat(dfs)
     savepath = os.path.join(to, file_name)
-    final_df.to_csv(savepath, compression='gzip')
+    final_df.to_csv(savepath, compression="gzip")
 
     print("All processes are completed.")

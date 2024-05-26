@@ -1,7 +1,7 @@
 import typer
 from rich import print
 
-from .cmd import update, make
+from .cmd import make, update
 
 app = typer.Typer()
 app.add_typer(update.app, name="update")
