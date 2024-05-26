@@ -1,8 +1,6 @@
 import datetime
 import os
-import time
 from concurrent import futures
-from functools import wraps
 from typing import Annotated
 
 import numpy as np
@@ -13,23 +11,12 @@ from rich.progress import track
 
 from .. import config
 from .model.bybit import Bybit
+from . import util
 
 app = typer.Typer()
 
 # constants
 MAX_WORKERS = 20
-
-
-def timer(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        start = time.time()
-        result = func(*args, **kwargs)
-        elapsed = time.time() - start
-        print(f"Elapsed time: {elapsed:.2f} sec")
-        return result
-
-    return wrapper
 
 
 def make_1s_candle(df: pd.DataFrame) -> pd.DataFrame:
@@ -124,7 +111,7 @@ def download_and_save(url: str, exc: Bybit, savepath: str) -> None:
 
 
 @app.command("item", help="Update an item in morphy storage.")
-@timer
+@util.timer
 def update(
     exchange: Annotated[str, typer.Argument(..., help="Exchange name")],
     symbol: Annotated[str, typer.Argument(..., help="Symbol")],
