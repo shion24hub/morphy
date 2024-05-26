@@ -20,6 +20,7 @@ def show() -> None:
 
     global storage_dir_path
     storage_dir_path = util.find_storage_path()
+    os.makedirs(storage_dir_path, exist_ok=True)
 
     # <-- Main Logic -->
     # get the size of the storage directory
