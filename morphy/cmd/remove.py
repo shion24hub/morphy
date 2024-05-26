@@ -18,7 +18,17 @@ def remove(
     begin: Annotated[str, typer.Argument(..., help="Date(YYYYMMDD)")],
     end: Annotated[str, typer.Argument(..., help="Date(YYYYMMDD)")],
 ) -> None:
-    """ """
+    """ 
+    An implementation of the remove item command of the Morphy CLI.
+    Remove specified data from morphy storage.
+
+    Args:
+        exchange(str): Exchange name
+        symbol(str): Symbol
+        begin(str): Begin date(YYYYMMDD)
+        end(str): End date(YYYYMMDD)
+    
+    """
 
     # <-- Input Validation -->
     try:
