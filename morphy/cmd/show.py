@@ -1,4 +1,5 @@
 import os
+import datetime
 
 import typer
 from rich import print
@@ -52,4 +53,6 @@ def show() -> None:
     print(f"Total size: {total_size / 1024 / 1024:.2f} MB\n")
     print(f"{'Exchange':<10} {'Symbol':<10} {'Begin':<10} {'End':<10}")
     for item in items:
-        print(f"{item[0]:<10} {item[1]:<10} {item[2]:<10} {item[3]:<10}")
+        formatted_start = datetime.datetime.strptime(item[2], "%Y%m%d").strftime('%Y-%m-%d')
+        formatted_end = datetime.datetime.strptime(item[3], "%Y%m%d").strftime('%Y-%m-%d')
+        print(f"{item[0]:<10} {item[1]:<10} {formatted_start:<10} {formatted_end:<10}")
