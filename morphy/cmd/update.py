@@ -2,6 +2,7 @@ import datetime
 import os
 from concurrent import futures
 from typing import Annotated
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -173,18 +174,13 @@ def update(
 
 
 @app.command('items')
-def update_items(file: Annotated[str, typer.Argument(..., help='File path')]) -> None:
+def update_items(file: Annotated[Path, typer.Argument(exists=True, dir_okay=False,help='File path')]) -> None:
     """
     An implementation of the update items command of the Morphy CLI.
     Each line of the procedure file must contain the arguments for the `update item` command.
     
     """
-    
-    # <-- Input Validation -->
-    if not os.path.exists(file):
-        err = f"{file} does not exist."
-        raise typer.BadParameter(err)
-    
+
     # <-- Main Logic -->
     with open(file, "r") as f:
         lines = f.readlines()

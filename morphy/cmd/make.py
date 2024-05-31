@@ -119,18 +119,14 @@ def make(
 
     print("All processes are completed.")
 
+
 @app.command('items')
-def make_items(file: Annotated[str, typer.Argument(..., help='File path')]) -> None:
+def make_items(file: Annotated[Path, typer.Argument(exists=True, dir_okay=False, help='File path')]) -> None:
     """
     An implementation of the make items command of the Morphy CLI.
     Each line of the procedure file must contain the arguments for the `make item` command.
     
     """
-    
-    # <-- Input Validation -->
-    if not os.path.exists(file):
-        err = f"{file} does not exist."
-        raise typer.BadParameter(err)
     
     # <-- Main Logic -->
     with open(file, "r") as f:
