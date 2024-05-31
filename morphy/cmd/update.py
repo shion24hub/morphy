@@ -173,7 +173,7 @@ def update(
 
 
 @app.command('items')
-def update_items(file=Annotated[str, typer.Argument(..., help='File path')]) -> None:
+def update_items(file: Annotated[str, typer.Argument(..., help='File path')]) -> None:
     """
     An implementation of the update items command of the Morphy CLI.
     Each line of the procedure file must contain the arguments for the `update item` command.
