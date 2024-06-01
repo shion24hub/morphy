@@ -29,34 +29,33 @@ def show() -> None:
     for root, _, files in os.walk(storage_dir_path):
         for file in files:
             total_size += os.path.getsize(os.path.join(root, file))
+    
+    print(f"Total size: {total_size / 1024 / 1024:.2f} MB\n")
 
     # get the list of items
-    items = []
-    for exchange in os.listdir(storage_dir_path):
-        if exchange.startswith("."):
+    print('{:<10} {:<10} {:<10} {:<10}'.format('Exchange', 'Symbol', 'Begin', 'End'))
+    for ex_d in storage_dir_path.iterdir():
+        if not ex_d.is_dir():
             continue
+        
+        for sym_d in ex_d.iterdir():
+            if not sym_d.is_dir():
+                continue
+            
+            items = []
+            for item in sym_d.iterdir():
+                if not item.is_file():
+                    continue
+                if not item.name.endswith('.csv.gz'):
+                    continue
 
-        for symbol in os.listdir(os.path.join(storage_dir_path, exchange)):
-            if symbol.startswith("."):
+                items.append(item.name.strip('.csv.gz'))
+            
+            if not items:
                 continue
 
-            dates = os.listdir(os.path.join(storage_dir_path, exchange, symbol))
-            dates = [date.split(".")[0] for date in dates]
-            if len(dates) == 0:
-                continue
-
-            begin = min(dates)
-            end = max(dates)
-            items.append((exchange, symbol, begin, end))
-
-    # <-- Output -->
-    print(f"Total size: {total_size / 1024 / 1024:.2f} MB\n")
-    print(f"{'Exchange':<10} {'Symbol':<10} {'Begin':<10} {'End':<10}")
-    for item in items:
-        formatted_start = datetime.datetime.strptime(item[2], "%Y%m%d").strftime(
-            "%Y-%m-%d"
-        )
-        formatted_end = datetime.datetime.strptime(item[3], "%Y%m%d").strftime(
-            "%Y-%m-%d"
-        )
-        print(f"{item[0]:<10} {item[1]:<10} {formatted_start:<10} {formatted_end:<10}")
+            dts = [datetime.datetime.strptime(item, '%Y%m%d') for item in items]
+            begin = min(dts).strftime('%Y-%m-%d')
+            end = max(dts).strftime('%Y-%m-%d')
+            
+            print(f'{ex_d.name:<10} {sym_d.name:<10} {begin:<10} {end:<10}')
