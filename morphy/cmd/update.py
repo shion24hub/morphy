@@ -2,6 +2,7 @@ import datetime
 import os
 from concurrent import futures
 from pathlib import Path
+from urllib.error import HTTPError
 from typing import Annotated
 
 import numpy as np
@@ -103,8 +104,13 @@ def download_and_save(url: str, exc: Bybit, savepath: str) -> None:
     if os.path.exists(savepath):
         # skip
         return
+    
+    try:
+        df = exc.download(url)
+    except HTTPError as e:
+        print(f'Failed to download {url}. {e}')
+        return
 
-    df = exc.download(url)
     df = make_1s_candle(df)
     os.makedirs(os.path.dirname(savepath), exist_ok=True)
     df.to_csv(savepath, compression="gzip")
