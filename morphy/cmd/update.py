@@ -2,8 +2,8 @@ import datetime
 import os
 from concurrent import futures
 from pathlib import Path
-from urllib.error import HTTPError
 from typing import Annotated
+from urllib.error import HTTPError
 
 import numpy as np
 import pandas as pd
@@ -104,11 +104,11 @@ def download_and_save(url: str, exc: Bybit, savepath: str) -> None:
     if os.path.exists(savepath):
         # skip
         return
-    
+
     try:
         df = exc.download(url)
     except HTTPError as e:
-        print(f'Failed to download {url}. {e}')
+        print(f"Failed to download {url}. {e}")
         return
 
     df = make_1s_candle(df)
